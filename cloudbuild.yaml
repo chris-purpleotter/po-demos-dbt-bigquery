@@ -7,10 +7,6 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'northamerica-northeast1-docker.pkg.dev/$PROJECT_ID/dbt-projects/demo-bigquery']
 
-# (Optional) Step 3: Run a dbt command immediately after building
-- name: 'northamerica-northeast1-docker.pkg.dev/$PROJECT_ID/dbt-projects/demo-bigquery'
-  args: ['dbt', 'debug']
-
 images:
 - 'northamerica-northeast1-docker.pkg.dev/$PROJECT_ID/dbt-projects/demo-bigquery'
 
