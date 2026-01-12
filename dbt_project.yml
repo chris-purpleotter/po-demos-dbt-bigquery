@@ -1,0 +1,24 @@
+name: 'po_data_demos'
+version: '1.0.0'
+
+profile: 'po_data_demos'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  po_data_demos:
+    analytics:
+      +materialized: table
+    intermediate:
+      +materialized: table
+    staging:
+      +materialized: table
