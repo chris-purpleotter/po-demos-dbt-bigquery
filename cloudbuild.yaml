@@ -1,0 +1,18 @@
+steps:
+# Step 1: Use the Dockerfile in this repo to build the image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'northamerica-northeast1-docker.pkg.dev/$PROJECT_ID/dbt-projects/demo-bigquery', '.']
+
+# Step 2: Push the built image to Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'northamerica-northeast1-docker.pkg.dev/$PROJECT_ID/dbt-projects/demo-bigquery']
+
+# (Optional) Step 3: Run a dbt command immediately after building
+- name: 'northamerica-northeast1-docker.pkg.dev/$PROJECT_ID/dbt-projects/demo-bigquery'
+  args: ['dbt', 'debug']
+
+images:
+- 'northamerica-northeast1-docker.pkg.dev/$PROJECT_ID/dbt-projects/demo-bigquery'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
