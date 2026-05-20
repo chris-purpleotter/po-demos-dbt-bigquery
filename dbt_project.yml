@@ -22,7 +22,14 @@ models:
       +materialized: table
     staging:
       +materialized: table
-    dbt_artifacts:
+  
+  dbt_artifacts:
+    +database: po1demo
+    +schema: dbt_metadata
+    staging:
+      +database: po1demo
+      +schema: dbt_metadata
+    sources:
       +database: po1demo
       +schema: dbt_metadata
 
