@@ -22,6 +22,9 @@ models:
       +materialized: table
     staging:
       +materialized: table
+    dbt_artifacts:
+      +database: po1demo
+      +schema: dbt_metadata
 
-on-run-start:
-  - "{{ dbt_external_tables.stage_external_sources() }}"
+on-run-end:
+  - "{{ dbt_artifacts.upload_results(results) }}"
