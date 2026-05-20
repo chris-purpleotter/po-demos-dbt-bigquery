@@ -5,3 +5,4 @@ sources:
     tables:
       - name: Account
       - name: donations
+      - name: bucket_of_parquets
