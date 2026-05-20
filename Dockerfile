@@ -4,7 +4,9 @@ RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/app
 
-RUN python -m pip install --no-cache-dir dbt-core dbt-bigquery
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+RUN uv pip install --system --no-cache dbt-core dbt-bigquery 
 
 COPY . .
 
