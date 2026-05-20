@@ -9,6 +9,8 @@ sources:
         external:
           location: 'gs://bucket-of-parquets/*'
           connection_id: 'po1demo.northamerica-northeast1.bucket-of-parquet-conn'
+          metadata_cache_mode: AUTOMATIC
+          max_staleness: 'INTERVAL 4 HOUR'
           hive_partitioning_options:
             mode: AUTO
           options:

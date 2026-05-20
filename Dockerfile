@@ -8,7 +8,8 @@ RUN python -m pip install --no-cache-dir dbt-core dbt-bigquery
 
 COPY . .
 
-RUN dbt deps
+RUN dbt deps 
 
-ENTRYPOINT ["dbt"]
-CMD ["run"]
+RUN chmod +x run.sh
+
+ENTRYPOINT ["./run.sh"]
