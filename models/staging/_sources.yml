@@ -8,10 +8,10 @@ sources:
       - name: bucket_of_parquets
         external:
           location: 'gs://bucket-of-parquets/*'
+          connection_id: 'projects/po1demo/locations/northamerica-northeast1/connections/bucket-of-parquet-conn'
           hive_partitioning_options:
             mode: AUTO
           options:
-            connection_id: 'projects/po1demo/locations/northamerica-northeast1/connections/bucket-of-parquet-conn'
             format: parquet
             metadata_cache_mode: AUTOMATIC
             max_staleness: 'INTERVAL 4 HOUR'
