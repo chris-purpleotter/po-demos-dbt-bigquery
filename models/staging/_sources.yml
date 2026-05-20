@@ -5,10 +5,6 @@ sources:
     tables:
       - name: Account
       - name: donations
-
-  - name: bucket_of_parquets
-    schema: raw_sf
-    tables:
       - name: bucket_of_parquets
         external:
           location: 'gs://bucket-of-parquets/*'
