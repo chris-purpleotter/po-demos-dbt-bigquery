@@ -22,3 +22,6 @@ models:
       +materialized: table
     staging:
       +materialized: table
+
+on-run-start:
+  - "{{ dbt_external_tables.stage_external_sources() }}"
