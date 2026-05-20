@@ -8,7 +8,8 @@ sources:
       - name: bucket_of_parquets
         external:
           location: 'gs://bucket-of-parquets/*'
+          hive_partitioning_options:
+            mode: AUTO
           options:
             format: parquet
-            hive_partitioning_mode: AUTO
             connection_id: 'po1demo.northamerica-northeast1.bucket-of-parquet-conn'
