@@ -6,7 +6,7 @@ WORKDIR /usr/app
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-RUN uv pip install --system --no-cache dbt-core dbt-bigquery 
+RUN uv pip install --system --no-cache dbt-core dbt-bigquery google-cloud-storage
 
 COPY . .
 

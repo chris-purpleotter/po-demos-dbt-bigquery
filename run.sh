@@ -1,6 +1,11 @@
 #!/bin/sh
-# Exit immediately if any command in this script throws an error
-set -e  
+set -u
 
-echo "=== Running Staging Models and Data Quality Tests ==="
+echo "=== dbt build ==="
 dbt build
+rc=$?
+
+echo "=== upload artifacts ==="
+python upload_artifacts.py
+
+exit $rc

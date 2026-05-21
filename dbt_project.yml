@@ -22,16 +22,3 @@ models:
       +materialized: table
     staging:
       +materialized: table
-  
-  dbt_artifacts:
-    +database: po1demo
-    +schema: dbt_metadata
-    staging:
-      +database: po1demo
-      +schema: dbt_metadata
-    sources:
-      +database: po1demo
-      +schema: dbt_metadata
-
-on-run-end:
-  - "{{ dbt_artifacts.upload_results(results) }}"
