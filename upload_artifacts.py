@@ -1,12 +1,47 @@
-"""Upload dbt artifacts from target/ to GCS in a hive-partitioned layout."""
+"""Upload dbt artifacts from target/ to GCS in a hive-partitioned layout.
+
+Raw JSON artifacts are uploaded as-is. run_results.json is also flattened to
+run_results.parquet so BigQuery can expose it via an external table.
+"""
+import json
 import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+import pyarrow as pa
+import pyarrow.parquet as pq
 from google.cloud import storage
 
-ARTIFACTS = ["manifest.json", "run_results.json", "catalog.json", "sources.json"]
+RAW_ARTIFACTS = ["manifest.json", "run_results.json", "catalog.json", "sources.json"]
+
+
+def flatten_run_results(target: Path) -> Path | None:
+    src = target / "run_results.json"
+    if not src.exists():
+        return None
+    data = json.loads(src.read_text())
+    metadata = data.get("metadata") or {}
+    invocation_id = metadata.get("invocation_id")
+    generated_at = metadata.get("generated_at")
+    elapsed_time = data.get("elapsed_time")
+
+    rows = []
+    for r in data.get("results") or []:
+        rows.append({
+            "invocation_id": invocation_id,
+            "generated_at": generated_at,
+            "elapsed_time": elapsed_time,
+            "unique_id": r.get("unique_id"),
+            "status": r.get("status"),
+            "execution_time": r.get("execution_time"),
+            "message": r.get("message"),
+            "raw": r,
+        })
+
+    out = target / "run_results.parquet"
+    pq.write_table(pa.Table.from_pylist(rows), out)
+    return out
 
 
 def main() -> int:
@@ -19,15 +54,16 @@ def main() -> int:
     bucket = storage.Client().bucket(bucket_name)
     target = Path("target")
 
-    uploaded = []
-    for name in ARTIFACTS:
-        path = target / name
-        if not path.exists():
-            continue
-        bucket.blob(f"{prefix}/{name}").upload_from_filename(str(path))
-        uploaded.append(name)
+    files_to_upload = [target / name for name in RAW_ARTIFACTS if (target / name).exists()]
+    parquet = flatten_run_results(target)
+    if parquet is not None:
+        files_to_upload.append(parquet)
 
-    print(f"uploaded {len(uploaded)} artifact(s) to gs://{bucket_name}/{prefix}/: {uploaded}")
+    for path in files_to_upload:
+        bucket.blob(f"{prefix}/{path.name}").upload_from_filename(str(path))
+
+    names = [p.name for p in files_to_upload]
+    print(f"uploaded {len(names)} artifact(s) to gs://{bucket_name}/{prefix}/: {names}")
     return 0
 
 
